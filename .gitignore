@@ -1,1 +1,5 @@
 pydemo/file/
+*.pyc
+.project
+.pydevproject
+pydemo/.settings/

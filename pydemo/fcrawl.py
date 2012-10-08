@@ -1,17 +1,20 @@
 # encoding:utf-8
 # 部分代码来源http://www.udacity.com/ 公开课
-
+"""
+功能：爬取网页，并抽取里面的正文，做一定的处理
+结果：text 文件
+"""
 import sys
 import re
 import socket
 import time
 import os
 import fhash
+import fstd
+import copy
 socket.setdefaulttimeout(8) 
 
-##page ='<div id="top_bin"><div id="top_content" class="width960"><div class="udacity float-left"><a href="http://www.xkcd.com">'
 
-# find all url in a webpage 
 import urllib2
 
 count = 1
@@ -19,24 +22,25 @@ def store_page(content,url):
 #    print url
     urlhash = fhash.calcSha1(url);
     print urlhash
+    
     fwrite = open (str(urlhash),'w')
     fwrite.write(content)
     fwrite.close()
+    
+    t = copy.deepcopy(content)
+    print t[:30]
+    fstd.creatText(t, str(urlhash))
+#    t = content
+#    text = fstd.filter_tags(t)
+#    print text
+#    fp = open(str(urlhash) + '.text','w')
+#    fp.write(text)
+#    fp.close()
 def get_page(url):
     try :
         page = urllib2.urlopen(url)
         content = page.read()
-#        t = content
         store_page(content, url)
-
-#        urlhash = fhash.calcSha1(url);
-#        print urlhash
-#        fwrite = open (str(urlhash),'w')
-#        fwrite.write(page.read())
-#        fwrite.close()
-#        print content
-#        store_page(page, url)
-#        print content
         return content
     except :
         return ""
@@ -75,7 +79,8 @@ def get_all_links(page):
     links= []
     end_pos = 0
     while end_pos <= len(page) -1:
-        start_link = page.find('<a href=')
+#        start_link = page.find('<a href=')
+        start_link = page.find('href=')
         start_pos = page.find('"',start_link)
         end_pos = page.find('"',start_pos+1)
         url = page[start_pos+1:end_pos]
@@ -86,7 +91,8 @@ def get_all_links(page):
         else:
             break
         page = page[end_pos:]
-
+     
+    print links
     return links
 
 def add_to_index(index,keyword,url):
@@ -100,17 +106,12 @@ def add_page_to_index(index,url,content):
     keywords = content.split()
     for keyword in keywords:
         add_to_index(index,keyword,url)
-#def crawl_web(seed):
-#        tocrawl = [seed]
-#        crawled = []
-#        while tocrawl:
-#                page = tocrawl.pop()
-#                if page not in crawled:
-#                        tocrawl = get_all_links
+
 def crawl_web(seed,max_depth):
     tocrawl = [seed]
     print tocrawl
-    crawled = []
+#    crawled = []
+    fcrawled = fhash.fUrl()
     next_deep = []
     deep = 0
     index = []
@@ -118,7 +119,8 @@ def crawl_web(seed,max_depth):
         url = tocrawl.pop()
 #        print url
         
-        if url not in crawled:
+#        if url not in crawled:
+        if fcrawled.lookup(url) == True:
             print url
             content = get_page(url)
 #            print url
@@ -126,8 +128,8 @@ def crawl_web(seed,max_depth):
                 print "content is none"
             print content[0:100]
             temp = get_all_links(content)
+            
             union(next_deep, temp)
-            crawled.append(url)
         if len(tocrawl) == 0:
                 print "None\n"
                 tocrawl = next_deep
@@ -135,7 +137,8 @@ def crawl_web(seed,max_depth):
 #                tocrawl,next_deep = next_deep,[]
                 deep = deep + 1
                 print tocrawl
-    return crawled
+    fcrawled.writeBack()
+    return fcrawled.addUrl
     
 def test():
     url = 'http://grs.bupt.edu.cn/'
@@ -147,10 +150,11 @@ def test():
     print content
         
 if __name__ == "__main__":
-    os.chdir("./file")
+
+    os.chdir(fstd.rootpat + "file")
 ##    print get_all_links( get_page("http://www.bupt.edu.cn") )
-    crawl_web("http://www.bupt.edu.cn",2)
-#    s = ["2" ,"3"]
+    crawl_web("http://127.0.0.1/webfile/index.html",3)
+#    s = ["2" ,"3"]www.bupt.edu.cn
 
 #    test()
 #    print s.pop()
