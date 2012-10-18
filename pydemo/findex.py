@@ -16,7 +16,7 @@ class findex(object):
     
     #直接从分词文件中，建立倒排表
     def creatIndex(self):
-        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpat+'url')
+        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpat+'file/url')
         fm = fmmseg.fmmseg()
         fm.loadTermfile() #
         
@@ -57,9 +57,9 @@ class findex(object):
         print self.index
         fout = open(fstd.rootpat+'file/termid','w')
         for termids in self.index.keys():
-            s = str(termids)+'##'
+            s = str(termids)+'###'
             for termid in self.index[termids]:
-                s = s+str(termid) +'#'
+                s = s+str(termid) +'###'
             fout.write(s+'\n')
         fout.close()   
 

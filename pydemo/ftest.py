@@ -37,7 +37,16 @@ def test1():
     fout.close()
     
 if __name__ == '__main__':
-    test1()
+#    test1()
+#    s = "1234"
+#    print s.find('1')
+#    s1 = s[:s.find('1')]
+#    s2 = s[s.find('1'):]
+#    print s1
+#    print s2
+    fp = open(fstd.rootpat+'data/fterms.dic','r')
+    for each in fp:
+        print each
 #    s = '123'
 #    s = s.replace('2', '4')
 #    print s

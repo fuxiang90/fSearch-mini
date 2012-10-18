@@ -1,10 +1,7 @@
-#Sat Oct 06 08:53:31 CST 2012
+#Wed Oct 17 17:52:18 CST 2012
 eclipse.preferences.version=1
-encoding/fcrawl.py=utf-8
-encoding/fhash.py=utf-8
 encoding/findex.py=utf-8
 encoding/finverted.py=utf-8
-encoding/flog.py=utf-8
 encoding/fmmseg.py=utf-8
 encoding/fquery.py=utf-8
 encoding/fstd.py=utf-8

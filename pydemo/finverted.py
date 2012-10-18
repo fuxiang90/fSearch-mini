@@ -51,11 +51,11 @@ def loadUrlfile(filename):
     for each in fp:
         if each == '\n' :
             continue
-        pos = each.find('#')
+        pos = each.find('###')
         hashkey = each[:pos]
-        pos2 = each.find('#',pos+1)
-        id = each[pos2+1:len(each)-1]
-        hashkeyToid[hashkey] = int(id);
+        pos2 = each.find('###',pos+3)
+        id = each[pos2+3:len(each)-1]
+        hashkeyToid[hashkey] = int(id)
     return hashkeyToid
             
  

@@ -57,6 +57,15 @@ class fmmseg(object):
     
     def cutWord(self,line):
 #        print line
+        jiebaflag = 1
+        if jiebaflag == 1:
+            import jieba  
+
+            seg_list = jieba.cut(line,cut_all=True)
+            s1 = '###'.join(seg_list)
+            return s1
+           
+            
         s1 = ''
         while line != '':
             if len(line) >= 8:
@@ -88,15 +97,16 @@ class fmmseg(object):
     
     def loadTermfile(self):
         fp = open(fstd.rootpat+'data/fterms.dic','r')
+        
         for each in fp:
-            pos = each.find('#')
+            pos = each.find('###')
             if pos == -1:
                 continue
             term = each[:pos]
             pos2 = each.find('\n')
             if pos2 == -1:
                 continue
-            id = each[pos+1:pos2]
+            id = each[pos+3:pos2]
             self.termdict[term] = int(id)
         fp.close()
     def mergeTerm(self):
@@ -106,11 +116,62 @@ class fmmseg(object):
         termcount = len(self.termdict.keys())
         for  t in self.term.keys():
             if t not in self.termdict:
-                s = t + str('#') + str(termcount+1)
+                s = t + str('###') + str(termcount+1)
                 termcount = termcount +1 
                 fp.write(s+'\n')
+                
+            
         
         fp.close()     
+    def mergeTermJieba(self):
+        self.loadTermfile()
+        fp = open('/home/fuxiang/python/fSearch-mini/pydemo/data/fterms.dic','a+')
+        
+        filenames = os.listdir(fstd.rootpat+'file')
+        
+        os.chdir(fstd.rootpat+'file')
+        for filename in filenames:
+            
+            fpos = filename.find('.tmp')
+            if fpos != -1:
+                
+                fin = open(filename,'r')
+                for eachline in fin:
+                   
+                    if eachline == '\n':
+                        continue 
+                    if eachline.find('\n') != -1:
+                        w = eachline[:eachline.find('\n')]
+                    else:
+                        w = eachline
+                    while w != '':
+                        pos = w.find('###')
+#                        print pos
+                        if pos == -1:
+                            break
+                        word = w[:pos]
+#                        if word not in self.termdict:
+#                        print word
+                        self.addTerm(word)
+                        w = w[pos+3 :]
+        
+        termcount = len(self.termdict.keys())
+        print len(self.term)
+        print len(self.termdict)
+        for  t in self.term.keys():
+#            print t
+#            if t not in self.termdict:
+            if True:
+#                print t
+                s = t + str('###') + str(termcount+1)
+                termcount = termcount +1 
+                print s
+#                s  = unicode(s)
+                fp.write(s+'\n') 
+            else:
+                print t ,"in"   
+        fp.close() 
+        
         
 def preFile():
     fp = open('/home/fuxiang/python/fSearch-mini/pydemo/data/chars.dic','r')
@@ -144,6 +205,12 @@ if __name__ == "__main__":
     os.chdir(fstd.rootpat+'file')
     for filename in filenames:
         if filename.find('.text') != -1:
+            
             f.segmentAFile(filename)
-    f.mergeTerm()
+    
+#    f.mergeTerm()
+
+    f.mergeTermJieba()
+#    print f.term
+    print "done it"
     
