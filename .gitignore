@@ -3,3 +3,6 @@ pydemo/file/
 .project
 .pydevproject
 pydemo/.settings/
+
+*.in
+*.out

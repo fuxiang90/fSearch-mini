@@ -1,3 +1,4 @@
+# encoding:utf-8
 import sys
 import re
 import socket
@@ -35,8 +36,38 @@ def test1():
     fout.write(text)
     fp.close()
     fout.close()
+ 
+ 
+
+def test2():
+    import zmq 
+    context = zmq.Context()
+
+    #  Socket to talk to server
+    print "Connecting to hello world server"
+    socket = context.socket(zmq.REQ)
+    socket.connect ("tcp://localhost:5555")
+
+    #  Do 10 requests, waiting each time for a response
+    for request in range (10):
+        print "Sending request ", request,"..."
+        socket.send ("Hello")
+    
+     #  Get the reply.
+        message = socket.recv()
+        print "Received reply ", request, "[", message, "]"
+    
+def test3():
+    
+    str = "我是付翔"
+    print len(str)
+    for i in str:
+        print int(i)
+    
     
 if __name__ == '__main__':
+    
+    test3()
 #    test1()
 #    s = "1234"
 #    print s.find('1')
@@ -44,9 +75,9 @@ if __name__ == '__main__':
 #    s2 = s[s.find('1'):]
 #    print s1
 #    print s2
-    fp = open(fstd.rootpat+'data/fterms.dic','r')
-    for each in fp:
-        print each
+#    fp = open(fstd.rootpat+'data/fterms.dic','r')
+#    for each in fp:
+#        print each
 #    s = '123'
 #    s = s.replace('2', '4')
 #    print s

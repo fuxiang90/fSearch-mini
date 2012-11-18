@@ -57,7 +57,7 @@ class fmmseg(object):
     
     def cutWord(self,line):
 #        print line
-        jiebaflag = 1
+        jiebaflag = 0
         if jiebaflag == 1:
             import jieba  
 
@@ -200,17 +200,18 @@ if __name__ == "__main__":
 
     f = fmmseg()
     f.loadWordFile('none')
-    s = f.worddict
-    filenames = os.listdir(fstd.rootpat+'file')
-    os.chdir(fstd.rootpat+'file')
-    for filename in filenames:
-        if filename.find('.text') != -1:
-            
-            f.segmentAFile(filename)
-    
-#    f.mergeTerm()
-
-    f.mergeTermJieba()
+    print  f.cutWord('你好中国我是中国人')
+#    s = f.worddict
+#    filenames = os.listdir(fstd.rootpat+'file')
+#    os.chdir(fstd.rootpat+'file')
+#    for filename in filenames:
+#        if filename.find('.text') != -1:
+#            
+#            f.segmentAFile(filename)
+#    
+##    f.mergeTerm()
+#
+#    f.mergeTermJieba()
 #    print f.term
     print "done it"
     
