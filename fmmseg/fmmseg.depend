@@ -1,0 +1,21 @@
+# depslib dependency file v1.0
+1353217158 source:/home/fuxiang/python/fSearch-mini/fmmseg/main.cpp
+	<iostream>
+	"include/CFmmseg.h"
+
+1353236388 /home/fuxiang/python/fSearch-mini/fmmseg/include/CFmmseg.h
+	<fstream>
+	<iostream>
+	<string>
+	<vector>
+	<map>
+	<sstream>
+	<cstdio>
+	<cstdlib>
+	<cstring>
+	<boost/algorithm/string/classification.hpp>
+	<boost/algorithm/string/split.hpp>
+
+1353236697 source:/home/fuxiang/python/fSearch-mini/fmmseg/src/CFmmseg.cpp
+	"../include/CFmmseg.h"
+
