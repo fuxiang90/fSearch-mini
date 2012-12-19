@@ -7,17 +7,20 @@
 import os
 import fstd
 import fmmseg
+import fstopword
 class findexspimi(object):
     def __init__(self):
         self.mainindex = {}
         self.index = {}
         self.termdict = self.loadTermfile()
         self.mmseg = fmmseg.fmmseg()  
-        self.k = 500
+        self.k = 50
         self.pos = 0
         self.filename = []
         self.fhashkeyToid = self.loadUrlfile(fstd.rootpat+'file/url')
         os.chdir(fstd.rootpat+'file')
+        
+        self.fstop = fstopword.fstopword()
     
     def loadTermfile(self):
         fp = open(fstd.rootpat+'data/fterms.dic')
@@ -28,8 +31,10 @@ class findexspimi(object):
             if each == '' :
                 continue
             pos = each.find('###')
+            if pos == -1 :
+                continue
             term = each[:pos]
-            id = each[pos+3:len(each)-1]
+            id = int(each[pos+3:len(each)-1])
             termdict[term] = id
         return termdict
             
@@ -47,14 +52,14 @@ class findexspimi(object):
         return hashkeyToid
     def getfilename(self):
         filenames = open(fstd.rootpat+'file/newurl')
-        lenfile = len(self.fhashkeyToid)
+#        lenfile = len(self.fhashkeyToid)
         for filename in filenames:
             pos = filename.find('\n')
             if pos != -1:
                 filename = filename[:pos]
             self.filename.append(filename)
-            lenfile = lenfile + 1
-            self.fhashkeyToid[filename] = lenfile
+#            lenfile = lenfile + 1
+#            self.fhashkeyToid[filename] = lenfile
     def getKfile(self):
         tempfile = []
         for i in range(0,self.k):
@@ -69,10 +74,12 @@ class findexspimi(object):
         return tempfile
         
     def spimi(self):
+        self.getfilename()
         import jieba
         indexid = 1
         while True:
             print "now is ",indexid
+            indexid = indexid + 1 
             files = self.getKfile()
             if files == [] :
                 break
@@ -82,13 +89,20 @@ class findexspimi(object):
                 cutstr = jieba.cut(file[0], cut_all = True)
                 docid = file[1]
                 for term in cutstr:
+                    if term == '':
+                        continue
+                    if self.fstop.isStop(term) == True:
+                        continue
                     pos= 0
-                    if term not in self.termdict:
+                    if term not in self.termdict.keys():
                         lendict = len(self.termdict)
                         self.termdict[term] = lendict + 1
                         pos = lendict + 1
                     else:
-                        pos = self.termdict[term]
+#                        pos = int( self.termdict[term] )
+                        pos = self.termdict.get(term)
+                        if pos == None :
+                            continue
                     termid = pos
                     if termid not in self.index.keys():
                             self.index[termid] = set()
@@ -109,6 +123,8 @@ class findexspimi(object):
             t = []
             if pos != -1 :
                 terms = terms[:pos]
+            if terms  == "":
+                continue
             pos2 = terms.find(':')
             termid = int(terms[:pos2])
             terms = terms[pos2 +1:]
@@ -135,14 +151,17 @@ class findexspimi(object):
         
     
     def storeTermfile(self):
+        print "store Termfile" ,len(self.termdict)
         fout = open(fstd.rootpat + 'data/fterms.dic','w')
-        pos = 1
+        pos = 0
         for i in self.termdict.keys():
             if i == '':
                 continue
+            pos = pos + 1
             if pos == 1:
                 continue
-            print str(i)
+            
+#            print str(i)
             s = str(i)  + '###' + str(self.termdict[i])
             
             fout.write(s+'\n')
@@ -168,7 +187,7 @@ class findexspimi(object):
 if __name__ == "__main__":
     
     f = findexspimi()
-    f.getfilename()
+    
 #    print f.fhashkeyToid
 #    t =  f.getKfile()
 #    print len(t)
