@@ -164,4 +164,3 @@ if __name__ == "__main__":
 #    for url in urls:
 #        print get_page(url)[0:30]
         
-    

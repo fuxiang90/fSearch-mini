@@ -36,7 +36,7 @@ bool CFmmseg::isUtfCh(const char ch)
 {
      unsigned char start = (unsigned char)ch;
 
-     if(start < (0xC0)){
+     if(start < (0xC0) ){
         return false;
      }
 
@@ -156,8 +156,6 @@ string CFmmseg::SegmentString(string s)
                 }else {
                     s1 = s1.substr(12,len - 12);
                 }
-
-
             }
 
             mdest = mdest +s2.str();

@@ -13,25 +13,26 @@ class fquery(object):
     def __init__(self):
         self.index = {}
         self.docidTohash = {}
-    def loadIndexFile(self,filename):
-        fp = open(fstd.rootpat+'file/termid','r')
-        for each in fp:
-            pos = each.find('###')
-            termid = int (each[:pos])
+    def loadIndexFile(self,filename): 
+        fin = open(filename)
+        self.index = {}
+        for terms in fin :
+            if terms == "\n":
+                continue
+            pos = terms.find('\n')
+            t = []
+            if pos != -1 :
+                terms = terms[:pos]
+            pos2 = terms.find(':')
+            termid = int(terms[:pos2])
+            terms = terms[pos2 +1:]
             self.index[termid] = set()
-            t = each[pos+3:]
-            while t != '':
-                if t == ' ':
-                    break
-                pos1 = t.find('###')
-                if pos1 == -1:
-                    break
-                docid = int(t[:pos1])
-                self.index[termid].add(docid)
-                t = t[pos1+3:]
-        fp.close()
-    def loadUrlfile(self,filename):
-        fp = open(fstd.rootpat+'file/url','r')
+            for docid in  str(terms).split():
+                self.index[termid].add(int(docid))
+        fin.close()
+    def loadUrlfile(self,filename): 
+        
+        fp = open(filename,'r')
         
         for each in fp:
             pos = each.find('###')
@@ -42,15 +43,15 @@ class fquery(object):
         fp.close()
     #这个函数对query 做了一个假设：查询词在term表中
     def query(self,q):
-        self.loadIndexFile(fstd.rootpat+'file/termid')
-        self.loadUrlfile(fstd.rootpat+'file/termid')
+        self.loadIndexFile(fstd.rootpat+'file/index.main')
+        self.loadUrlfile(fstd.rootpat+'file/url')
         fm = fmmseg.fmmseg()
         fm.loadTermfile()
 #        print self.index
         docs = [] 
         re = []
         if q  in fm.termdict:
-            termid = int(fm.termdict[q])
+            termid = int(fm.termdict[q]) 
             print termid
             docs = self.index[termid]
             print docs

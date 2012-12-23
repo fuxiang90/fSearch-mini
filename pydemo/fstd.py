@@ -68,3 +68,22 @@ def replaceCharEntity(htmlstr):
 
 def repalce(s,re_exp,repl_string):
     return re_exp.sub(repl_string,s)
+
+def changegbkToutf(filename):
+    try :
+        fp = open(filename)
+        content = fp.read()
+        gbk_content = content.decode('gbk')
+        utf_content = gbk_content.encode('utf-8')
+        fp.close()
+        fout = open(filename,'w')
+        fout.write(utf_content)
+        fout.close()
+        return utf_content
+    except:
+        return ""
+
+if __name__ == "__main__":
+#    import sys
+    
+    changegbkToutf('./data/fterms.dic')

@@ -6,3 +6,7 @@ pydemo/.settings/
 
 *.in
 *.out
+*.o
+fmmseg/bin
+fmmseg/obj
+

@@ -14,7 +14,7 @@ class findexspimi(object):
         self.index = {}
         self.termdict = self.loadTermfile()
         self.mmseg = fmmseg.fmmseg()  
-        self.k = 50
+        self.k = 500
         self.pos = 0
         self.filename = []
         self.fhashkeyToid = self.loadUrlfile(fstd.rootpat+'file/url')
@@ -72,14 +72,29 @@ class findexspimi(object):
             self.pos = self.pos + 1
             tempfile.append(t)
         return tempfile
+    
+    #将中间生成的temp index 写进文件里面去
+    def writeTempIndex(self,indexid ,index):
+        fout = open("index."+str(indexid),"w")
+        for i in index:
+#            s = ' '.join(index[i])
+            s = ''
+            for ii in index[i]:
+                s = s + str(ii) + ' '
+            fout.write(str(i)+':'+s+'\n')
+        fout.close()
+        
+        
         
     def spimi(self):
         self.getfilename()
+        
         import jieba
-        indexid = 1
+        indexid = 0
         while True:
-            print "now is ",indexid
+            
             indexid = indexid + 1 
+            print "now is ",indexid
             files = self.getKfile()
             if files == [] :
                 break
@@ -94,24 +109,29 @@ class findexspimi(object):
                     if self.fstop.isStop(term) == True:
                         continue
                     pos= 0
-                    if term not in self.termdict.keys():
-                        lendict = len(self.termdict)
-                        self.termdict[term] = lendict + 1
-                        pos = lendict + 1
-                    else:
-#                        pos = int( self.termdict[term] )
+                    if term  in self.termdict:
                         pos = self.termdict.get(term)
                         if pos == None :
                             continue
+                        pos = int( self.termdict[term] )
+                        
+                    else:
+                        lendict = len(self.termdict)
+                        self.termdict[term] = lendict + 1
+                        pos = lendict + 1
+#                       
                     termid = pos
-                    if termid not in self.index.keys():
-                            self.index[termid] = set()
-                    self.index[termid].add(docid)
+                    if termid not in self.index:
+#                            self.index[termid] = set()
+                            self.index[termid] = []
+#                    self.index[termid].add(docid)
+                    self.index[termid].append(docid)
                 
+            
 #            print self.index
             
         
-        self.mergeIndex()
+        self.mergeIndex(indexid)
     
     def getIndexfile(self,filename):
         fin = open(filename)
@@ -128,22 +148,28 @@ class findexspimi(object):
             pos2 = terms.find(':')
             termid = int(terms[:pos2])
             terms = terms[pos2 +1:]
-            tempindex[termid] = set()
+#            tempindex[termid] = set()
+            tempindex[termid] = []
             for docid in  str(terms).split():
-                tempindex[termid].add(int(docid))
+#                tempindex[termid].add(int(docid))
+                tempindex[termid].append(int(docid))
         return tempindex
-            
-    def mergeIndex(self):
+    
+    def mergeList(self,a,b):
+        c = a+b 
+        return list(set(c))     
+    def mergeIndex(self,indexcount):
      
         indexmain = self.getIndexfile("index.main")
         newindex = {}
         
 #        print indexmain ,"---------------\n",self.index
-        for i in self.index.keys():
+        for i in self.index:
             if i not in indexmain:
                 newindex[i] = self.index[i]
             else:
-                newindex[i] = self.index[i] | indexmain[i]
+#                newindex[i] = self.index[i] | indexmain[i]
+                 newindex[i] = self.mergeList(self.index[i] ,indexmain[i])
 #            print newindex[i]
 #        print newindex
         self.storeMainIndex(newindex)
@@ -154,7 +180,7 @@ class findexspimi(object):
         print "store Termfile" ,len(self.termdict)
         fout = open(fstd.rootpat + 'data/fterms.dic','w')
         pos = 0
-        for i in self.termdict.keys():
+        for i in self.termdict:
             if i == '':
                 continue
             pos = pos + 1
@@ -162,15 +188,19 @@ class findexspimi(object):
                 continue
             
 #            print str(i)
-            s = str(i)  + '###' + str(self.termdict[i])
+            try:
+                s = str(i)  + '###' + str(self.termdict[i])
             
-            fout.write(s+'\n')
+                fout.write(s+'\n')
+            except:
+                print "error ",i
+                continue
         fout.close()
             
         
     def storeMainIndex(self,index):
         fout = open("index.main","w")
-        for i in index.keys():
+        for i in index:
 #            s = ' '.join(index[i])
             s = ''
             for ii in index[i]:
@@ -180,12 +210,11 @@ class findexspimi(object):
             
         
             
-        
-        
-    
-    
-if __name__ == "__main__":
-    
+ 
+def run():
+    import time
+ 
+    t1 = time.clock()
     f = findexspimi()
     
 #    print f.fhashkeyToid
@@ -194,6 +223,17 @@ if __name__ == "__main__":
     
 #    print f.getIndexfile("index.main")
     f.spimi()
+    t2 = time.clock()
+    print (t2 - t1)/1000000      
+        
+
+def runWithProfie():
+    pass
+    
+    
+if __name__ == "__main__":
+    
+    run()
     print "done it"
     
     

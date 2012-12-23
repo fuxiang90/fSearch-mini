@@ -24,21 +24,30 @@ class fmmseg(object):
             fout.write(i+'\r\n')
         
         fout.close()
+        
+    def isUtfCh(self,ch):
+        start = ord(ch)
+        if start < (0xC0):
+            return False
+        return True
     def segmentAFile(self,filename):
         fp = open(filename,'r')
         fout = open(filename[:filename.find('.')]+'.tmp','w')
 #        fp = ['我是中国人','中国你好','沟通永不离线','精彩永不间断']
         i = 0
-        for eachline in fp:
-            print i ,":",eachline
-            i = i +1
-            if eachline.find('\n')!= -1:
-                eachline = eachline[:eachline.find('\n')]
-            if eachline == '' or eachline == '\n':
-                continue
-            s2 = self.cutWord(eachline)
-            print s2
-            fout.write(s2+'\n')
+#        for eachline in fp:
+##            print i ,":",eachline
+#            i = i +1
+#            if eachline.find('\n')!= -1:
+#                eachline = eachline[:eachline.find('\n')]
+#            if eachline == '' or eachline == '\n':
+#                continue
+#            s2 = self.cutWord(eachline)
+##            print s2
+#            fout.write(s2+'\n')
+
+        s2 = self.cutWord(fp.read())
+        fout.write(s2+'\n')
         fp.close()
         fout.close()
        
@@ -57,15 +66,17 @@ class fmmseg(object):
     
     def cutWord(self,line):
 #        print line
-        jiebaflag = 0
+        jiebaflag = 1
         if jiebaflag == 1:
             import jieba  
 
             seg_list = jieba.cut(line,cut_all=True)
-            s1 = '###'.join(seg_list)
+            s1 = ' '.join(seg_list)
             return s1
            
-            
+           
+        #此版本用bug ，只是考虑全部字符都是中文的时候
+        #庆幸之后的C++ 版本并没有这个问题 
         s1 = ''
         while line != '':
             if len(line) >= 8:
@@ -107,7 +118,9 @@ class fmmseg(object):
             if pos2 == -1:
                 continue
             id = each[pos+3:pos2]
-            self.termdict[term] = int(id)
+            if str(id).isdigit() == True :
+                self.termdict[term] = int(id)
+            
         fp.close()
     def mergeTerm(self):
         self.loadTermfile()
@@ -156,8 +169,8 @@ class fmmseg(object):
                         w = w[pos+3 :]
         
         termcount = len(self.termdict.keys())
-        print len(self.term)
-        print len(self.termdict)
+#        print len(self.term)
+#        print len(self.termdict)
         for  t in self.term.keys():
 #            print t
 #            if t not in self.termdict:
@@ -165,7 +178,7 @@ class fmmseg(object):
 #                print t
                 s = t + str('###') + str(termcount+1)
                 termcount = termcount +1 
-                print s
+#                print s
 #                s  = unicode(s)
                 fp.write(s+'\n') 
             else:
@@ -200,17 +213,17 @@ if __name__ == "__main__":
 
     f = fmmseg()
     f.loadWordFile('none')
-    print  f.cutWord('你好中国我是中国人')
-#    s = f.worddict
-#    filenames = os.listdir(fstd.rootpat+'file')
-#    os.chdir(fstd.rootpat+'file')
-#    for filename in filenames:
-#        if filename.find('.text') != -1:
-#            
-#            f.segmentAFile(filename)
-#    
-##    f.mergeTerm()
-#
+#    print  f.cutWord('你好中国我是中国人')
+    s = f.worddict
+    filenames = os.listdir(fstd.rootpat+'file')
+    os.chdir(fstd.rootpat+'file')
+    for filename in filenames:
+        if filename.find('.text') != -1:
+            
+            f.segmentAFile(filename)
+    
+#    f.mergeTerm()
+
 #    f.mergeTermJieba()
 #    print f.term
     print "done it"

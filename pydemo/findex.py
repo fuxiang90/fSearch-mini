@@ -54,7 +54,7 @@ class findex(object):
                         s = s[pos+3:]
                     
                 fp.close()
-        print self.index
+        #print self.index
         fout = open(fstd.rootpat+'file/termid','w')
         for termids in self.index.keys():
             s = str(termids)+'###'
@@ -108,8 +108,9 @@ class findex(object):
             if True:
                 print filename
                 fp = open(filename,'r')
-                hashkey = filename
+                hashkey = filename[:filename.find('.tmp')]
                 if hashkey not in self.fhashkeyToid:
+                    print "-----> "+hashkey + "not in"
                     continue
                 docid = self.fhashkeyToid[hashkey]
                 for each in fp:
@@ -129,12 +130,13 @@ class findex(object):
                         id = fm.termdict[s1]
                         if id not in self.index.keys():
                                 self.index[id] = set()
+#                        print docid
                         self.index[id].add(docid)
                         s = s[pos+3:]
                     
                 fp.close()
         
-        print self.index[2] 
+        #print self.index[2] 
         print '索引建好了'
         fout = open(fstd.rootpat+'file/termid','w')
         for termids in self.index.keys():
@@ -145,9 +147,18 @@ class findex(object):
         fout.close()   
         
 if __name__ == '__main__':
+    
+    import sys
+    op = 2
+#    if sys.argv is not None:
+#        op = int(sys.argv[1])
     f = findex()
-#    f.creatIndex()
-    f.MergeIndex()
+    
+    
+    if op == 1 :
+        f.creatIndex()
+    elif op == 2  : 
+        f.MergeIndex()
     print "done it"
         
         
