@@ -224,13 +224,15 @@ def run():
 #    print f.getIndexfile("index.main")
     f.spimi()
     t2 = time.clock()
-    print (t2 - t1)/1000000      
+    print (t2 - t1)      
         
 
 def runWithProfie():
     pass
-    
-    
+
+
+
+
 if __name__ == "__main__":
     
     run()
