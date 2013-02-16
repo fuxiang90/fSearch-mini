@@ -16,13 +16,13 @@ class findex(object):
     
     #直接从分词文件中，建立倒排表
     def creatIndex(self):
-        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpat+'file/url')
+        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpath+'file/url')
         fm = fmmseg.fmmseg()
         fm.loadTermfile() #
         
         
-        filenames = os.listdir(fstd.rootpat+'file')
-        os.chdir(fstd.rootpat+'file')
+        filenames = os.listdir(fstd.rootpath+'file')
+        os.chdir(fstd.rootpath+'file')
         for filename in filenames:
             
             fpos = filename.find('.tmp')
@@ -55,7 +55,7 @@ class findex(object):
                     
                 fp.close()
         #print self.index
-        fout = open(fstd.rootpat+'file/termid','w')
+        fout = open(fstd.rootpath+'file/termid','w')
         for termids in self.index.keys():
             s = str(termids)+'###'
             for termid in self.index[termids]:
@@ -66,9 +66,9 @@ class findex(object):
     # 合并索引  下次要把各自的依赖关系理清才行
     #===========================================================================
     def MergeIndex(self):
-        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpat+'file/url')
+        self.fhashkeyToid = finverted.loadUrlfile(fstd.rootpath+'file/url')
         
-        fp = open(fstd.rootpat+'file/termid','r')
+        fp = open(fstd.rootpath+'file/termid','r')
         for each in fp:
             pos1 = each.find('###')
             termid = int(each[:pos1])
@@ -85,10 +85,10 @@ class findex(object):
         
         
         #对新的文件进行分词
-        os.chdir(fstd.rootpat+'file')
+        os.chdir(fstd.rootpath+'file')
         fm = fmmseg.fmmseg()
         fm.loadTermfile()
-        furl = open(fstd.rootpat+'file/newurl','r')
+        furl = open(fstd.rootpath+'file/newurl','r')
         for url in furl:
             url = url[:url.find('\n')]
             fm.segmentAFile(url+'.text')
@@ -99,7 +99,7 @@ class findex(object):
         
         furl.close()
         #进行索引
-        furl = open(fstd.rootpat+'file/newurl','r')
+        furl = open(fstd.rootpath+'file/newurl','r')
         
         for filename in furl:
             
@@ -138,7 +138,7 @@ class findex(object):
         
         #print self.index[2] 
         print '索引建好了'
-        fout = open(fstd.rootpat+'file/termid','w')
+        fout = open(fstd.rootpath+'file/termid','w')
         for termids in self.index.keys():
             s = str(termids)+'###'
             for termid in self.index[termids]:

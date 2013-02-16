@@ -43,8 +43,8 @@ class fquery(object):
         fp.close()
     #这个函数对query 做了一个假设：查询词在term表中
     def query(self,q):
-        self.loadIndexFile(fstd.rootpat+'file/index.main')
-        self.loadUrlfile(fstd.rootpat+'file/url')
+        self.loadIndexFile(fstd.rootpath+'file/index.main')
+        self.loadUrlfile(fstd.rootpath+'file/url')
         fm = fmmseg.fmmseg()
         fm.loadTermfile()
 #        print self.index
@@ -56,12 +56,26 @@ class fquery(object):
             docs = self.index[termid]
             print docs
             for docid in docs:
-                fp = open(fstd.rootpat + 'file/'+self.docidTohash[docid]+'.text')
+                fp = open(fstd.rootpath + 'file/'+self.docidTohash[docid]+'.text')
                 c =  fp.read()
                 print '----------------------------------------------------'
                 print c
                 re.append(c)
                 fp.close()
+    def getDocList(self,query):
+        self.loadIndexFile(fstd.rootpath+'file/index.main')
+        self.loadUrlfile(fstd.rootpath+'file/url')
+        fm = fmmseg.fmmseg()
+        fm.loadTermfile()
+#        print self.index
+        docs = [] 
+ 
+        if query  in fm.termdict:
+            termid = int(fm.termdict[query]) 
+            print termid
+            docs = self.index[termid]
+        
+        return docs
 
 if __name__ == '__main__':
     f = fquery()

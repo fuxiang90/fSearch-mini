@@ -17,13 +17,13 @@ class findexspimi(object):
         self.k = 500
         self.pos = 0
         self.filename = []
-        self.fhashkeyToid = self.loadUrlfile(fstd.rootpat+'file/url')
-        os.chdir(fstd.rootpat+'file')
+        self.fhashkeyToid = self.loadUrlfile(fstd.rootpath+'file/url')
+        os.chdir(fstd.rootpath+'file')
         
         self.fstop = fstopword.fstopword()
     
     def loadTermfile(self):
-        fp = open(fstd.rootpat+'data/fterms.dic')
+        fp = open(fstd.rootpath+'data/fterms.dic')
         termdict = {}
         for each in fp:
             if each == '\n' :
@@ -51,7 +51,7 @@ class findexspimi(object):
             hashkeyToid[hashkey] = int(id)
         return hashkeyToid
     def getfilename(self):
-        filenames = open(fstd.rootpat+'file/newurl')
+        filenames = open(fstd.rootpath+'file/newurl')
 #        lenfile = len(self.fhashkeyToid)
         for filename in filenames:
             pos = filename.find('\n')
@@ -178,7 +178,7 @@ class findexspimi(object):
     
     def storeTermfile(self):
         print "store Termfile" ,len(self.termdict)
-        fout = open(fstd.rootpat + 'data/fterms.dic','w')
+        fout = open(fstd.rootpath + 'data/fterms.dic','w')
         pos = 0
         for i in self.termdict:
             if i == '':

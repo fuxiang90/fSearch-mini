@@ -107,7 +107,7 @@ class fmmseg(object):
         print line
     
     def loadTermfile(self):
-        fp = open(fstd.rootpat+'data/fterms.dic','r')
+        fp = open(fstd.rootpath+'data/fterms.dic','r')
         
         for each in fp:
             pos = each.find('###')
@@ -140,9 +140,9 @@ class fmmseg(object):
         self.loadTermfile()
         fp = open('/home/fuxiang/python/fSearch-mini/pydemo/data/fterms.dic','a+')
         
-        filenames = os.listdir(fstd.rootpat+'file')
+        filenames = os.listdir(fstd.rootpath+'file')
         
-        os.chdir(fstd.rootpat+'file')
+        os.chdir(fstd.rootpath+'file')
         for filename in filenames:
             
             fpos = filename.find('.tmp')
@@ -200,8 +200,8 @@ def preFile():
 def test():
     fout = open('/home/fuxiang/python/fSearch-mini/pydemo/data/fout','rb')
     d = {}
-    filenames = os.listdir(fstd.rootpat+'file')
-    os.chdir(fstd.rootpat+'file')
+    filenames = os.listdir(fstd.rootpath+'file')
+    os.chdir(fstd.rootpath+'file')
     for each in fout:  
         if each in d :
             d[each] = d[each] +1
@@ -215,8 +215,8 @@ if __name__ == "__main__":
     f.loadWordFile('none')
 #    print  f.cutWord('你好中国我是中国人')
     s = f.worddict
-    filenames = os.listdir(fstd.rootpat+'file')
-    os.chdir(fstd.rootpat+'file')
+    filenames = os.listdir(fstd.rootpath+'file')
+    os.chdir(fstd.rootpath+'file')
     for filename in filenames:
         if filename.find('.text') != -1:
             

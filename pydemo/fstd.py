@@ -2,7 +2,7 @@
 
 #设置一些参数 主要是一些路径 和一些常用函数
 
-rootpat = '/home/fuxiang/python/fSearch-mini/pydemo/' # 程序运行的根目录
+rootpath = '/home/fuxiang/python/fSearch-mini/pydemo/' # 程序运行的根目录
 import re
 
 def creatText(content,filename):
@@ -18,7 +18,7 @@ def creatText(content,filename):
         pos2 = content.find('>',pos1+1)
         content = content[pos2+1:]
     text = text.replace(' ', '')
-    fout = open(rootpat+'file/'+filename + '.text','w')
+    fout = open(rootpath+'file/'+filename + '.text','w')
     fout.write(text)
     fout.close()
 def filter_tags(htmlstr):

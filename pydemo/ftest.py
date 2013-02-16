@@ -6,7 +6,7 @@ import time
 import os
 import fhash
 import fstd
-
+import json
 import fcrawl
 
 def test1():
@@ -46,16 +46,18 @@ def test2():
     #  Socket to talk to server
     print "Connecting to hello world server"
     socket = context.socket(zmq.REQ)
-    socket.connect ("tcp://localhost:5555")
+    socket.connect ("tcp://127.0.0.1:5555")
 
     #  Do 10 requests, waiting each time for a response
-    for request in range (10):
+    for request in range (20):
         print "Sending request ", request,"..."
-        socket.send ("Hello")
+        socket.send ("linux")
     
      #  Get the reply.
         message = socket.recv()
-        print "Received reply ", request, "[", message, "]"
+        decodejson = json.loads(message)
+        print type(decodejson)
+        print "Received reply ", request, "[", decodejson[0:20], "]"
     
 def test3():
     import jieba
@@ -155,15 +157,32 @@ def testDict():
     fp2.close()
     t3 =  time.clock()
     print (t3 - t2)/1000000
+
+
+def testJson():
+   
+    data1 = {'b':789,'c':1456,'a':1233}
+   
+    print [x[0] for x in sorted(data1.items() ,lambda x,y:cmp(x[1],y[1]), reverse=True) ]
+    print '-----------'
+    encodedjson = json.dumps(data1)
+    print encodedjson
+    f = open('json','w')
+    f.write(encodedjson)
+    f.close()
+    fin = open('json','r').read()
+    print fin
+    decodejson = json.loads(fin)
     
-    
+    print decodejson['a']
 if __name__ == '__main__':
 #    testjieb()
 #    judgeCharset("file/5197f1a79f5adae1818ca6f9bb4b3375c809397b.text")
 #    test5()
-    import cProfile
-    cProfile.run("testDict()")
-    import pstats
-    p = pstats.Stats("prof.txt")
-    p.sort_stats("time").print_stats()
+#    import cProfile
+#    cProfile.run("testDict()")
+#    import pstats
+#    p = pstats.Stats("prof.txt")
+#    p.sort_stats("time").print_stats()
+    test2()
     print "done it"
